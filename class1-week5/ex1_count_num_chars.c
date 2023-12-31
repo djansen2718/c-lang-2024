@@ -16,6 +16,6 @@ char ch[1000];
     if (ch[i] == '\0')
       return i;
     i++;
-  }
+}
   return -1;
 }
