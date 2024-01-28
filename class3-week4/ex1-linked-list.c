@@ -80,25 +80,22 @@ void list_dump(lst) struct list *lst;
 void list_add(lst, value) struct list *lst;
 int value;
 {
+  struct lnode *new_node = (struct lnode *)
+      malloc(sizeof(struct lnode));
+  new_node->value = value;
+  new_node->next = NULL;
   while (1)
   {
     if (lst->head == NULL)
     {
       printf("part 1\n");
-      struct lnode *new_node = (struct lnode *)
-          malloc(sizeof(struct lnode));
-      new_node->value = value;
-      new_node->next = NULL;
+
       lst->head = new_node;
       return;
     }
     else if (lst->head->next == NULL)
     {
       printf("part2\n");
-      struct lnode *new_node = (struct lnode *)
-          malloc(sizeof(struct lnode));
-      new_node->value = value;
-      new_node->next = NULL;
       lst->head->next = new_node;
       lst->tail = new_node;
       return;
