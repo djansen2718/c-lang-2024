@@ -1,13 +1,3 @@
-/*
-Linked List
-
-You will write a function list_add() to
-append an integer to the end of a linked list.
-You will also write a function called list_find()
-that will return the list node containing the
-integer value or NULL if the value is not in the list.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -27,6 +17,7 @@ int main()
 {
   void list_add();
   void list_dump();
+  void list_remove();
   struct lnode *list_find();
 
   struct list mylist;
@@ -36,34 +27,31 @@ int main()
   mylist.tail = NULL;
 
   list_add(&mylist, 10);
-  list_dump(&mylist);
   list_add(&mylist, 20);
-  list_dump(&mylist);
   list_add(&mylist, 30);
+  printf("Expected: 10, 20, 30");
   list_dump(&mylist);
 
-  mynode = list_find(&mylist, 42);
-  if (mynode == NULL)
-  {
-    printf("Did not find 42\n");
-  }
-  else
-  {
-    printf("Looked for 42, found %d\n", mynode->value);
-  }
+  printf("list_remove(&mylist, 42);\n");
+  list_remove(&mylist, 42);
+  printf("Expected: 10, 20, 30");
+  list_dump(&mylist);
 
-  mynode = list_find(&mylist, 30);
-  if (mynode == NULL || mynode->value != 30)
-  {
-    printf("Did not find 30\n");
-  }
-  else
-  {
-    printf("Found 30\n");
-  }
+  printf("list_remove(&mylist, 10);\n");
+  list_remove(&mylist, 10);
+  printf("Expected: 20, 30");
+  list_dump(&mylist);
 
-  // list_add(&mylist, 40);
-  // list_dump(&mylist);
+  printf("list_remove(&mylist, 30);\n");
+  list_remove(&mylist, 30);
+  printf("Expected: 20");
+  list_dump(&mylist);
+
+  printf("list_add(&mylist, 40);\n");
+  list_add(&mylist, 40);
+
+  printf("Expected: 20, 40");
+  list_dump(&mylist);
 }
 
 void list_dump(lst) struct list *lst;
@@ -108,22 +96,45 @@ int value;
   /* Append the value to the end of the linked list. */
 }
 
-struct lnode *list_find(lst, value)
-struct list *lst;
+void list_remove(lst, value) struct list *lst;
 int value;
 {
-  struct lnode *curr;
+  /* Remove the value from the linked list. */
+  struct lnode *curr, *prev;
   curr = lst->head;
+  prev = NULL;
   while (1)
   {
-    if (curr == NULL)
+    if (curr->value == value)
     {
-      return NULL;
+      if (prev == NULL)
+      {
+        /* Case 1: value at beginning of list*/
+        lst->head = lst->head->next;
+        // free current
+        return;
+      }
+      else if (curr == lst->tail)
+      {
+        /* Case 3: value at end of list*/
+        lst->tail = prev;
+        // free current
+        return;
+      }
+      else
+      {
+        /* Case 2: value in middle of list*/
+        prev->next = curr->next;
+        // free current
+        return;
+      }
     }
-    else if (curr->value == value)
+    if (curr->next == NULL)
     {
-      return curr;
+      /* Case 4: value not in list*/
+      return;
     }
+    prev = curr;
     curr = curr->next;
   }
 }
