@@ -66,10 +66,30 @@ char *pystr_str(const struct pystr *self)
   return self->data;
 }
 
-/* MY CODE STARTS HERE*/
+/* ************************* MY CODE STARTS HERE ************************* */
 void pystr_append(struct pystr *self, char ch)
 {
   /* Need about 10 lines of code here */
+  int i = 0;
+  while (1)
+  {
+    // printf("i: %d\n", i);
+    if (i + 1 >= self->alloc)
+    {
+      // printf("calling realloc now ... i=%d\n", i);
+      self->data = realloc(self->data, self->alloc + 10);
+      self->alloc += 10;
+    }
+    if (self->data[i] == '\0')
+    {
+      // printf("Appending with i=%d\n", i);
+      self->data[i + 1] = '\0';
+      self->data[i] = ch;
+      self->length += 1;
+      break;
+    }
+    i++;
+  }
 }
 
 /* x = x + "hello"; */
@@ -77,6 +97,11 @@ void pystr_append(struct pystr *self, char ch)
 void pystr_appends(struct pystr *self, char *str)
 {
   /* Need a line or two of code here */
+  int i;
+  for (i = 0; str[i] != '\0'; i++)
+  {
+    pystr_append(self, str[i]);
+  }
 }
 
 /* x = "hello"; */
@@ -84,9 +109,18 @@ void pystr_appends(struct pystr *self, char *str)
 void pystr_assign(struct pystr *self, char *str)
 {
   /* Need about three lines of code here */
+  self->data = realloc(self->data, 10);
+  self->alloc = 10;
+  int i;
+  for (i = 0; i < 10; i++)
+  {
+    self->data[i] = '\0';
+  }
+  self->length = 0;
+  pystr_appends(self, str);
 }
 
-/* MY CODE ENDS HERE*/
+/* ************************* MY CODE ENDS HERE ************************* */
 
 int main(void)
 {
