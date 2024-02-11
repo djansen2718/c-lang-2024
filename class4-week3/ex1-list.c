@@ -71,6 +71,15 @@ Bob? -1
 void pylist_print(struct pylist *self)
 {
   printf("[");
+  struct lnode *cur, *next;
+  cur = self->head;
+  while (cur)
+  {
+    printf("'%s'", self->head->text);
+    cur = self->head->next;
+  }
+  printf("]");
+  return;
 
   /* About 10 lines of code
      The output should match Python's
@@ -133,7 +142,7 @@ int main(void)
 
   struct pylist *lst = pylist_new();
   pylist_append(lst, "Hello world");
-  // pylist_print(lst);
+  pylist_print(lst);
   // pylist_append(lst, "Catch phrase");
   // pylist_print(lst);
   // pylist_append(lst, "Brian");
