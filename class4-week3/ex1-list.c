@@ -71,14 +71,14 @@ Bob? -1
 void pylist_print(struct pylist *self)
 {
   printf("[");
-  struct lnode *cur, *next;
+  struct lnode *cur;
   cur = self->head;
   while (cur)
   {
-    printf("'%s'", self->head->text);
-    cur = self->head->next;
+    printf("'%s'", cur->text);
+    cur = cur->next;
   }
-  printf("]");
+  printf("]\n");
   return;
 
   /* About 10 lines of code
@@ -106,15 +106,17 @@ void pylist_append(struct pylist *self, char *str)
   if (self->head == NULL)
   {
     self->head = malloc(sizeof(self->head));
+    // here's where i understand how nice it is to use pointers
+    // the thing that is passed in already has been allocated
+    // so if we just point to it, we don't have to allocate
     self->head->text = str;
-    // self->head->text = malloc(self->head->text, sizeof(str));
-    // strcpy(self->head->text, str);
-    // self->head->next = NULL;
     return;
   }
-  else
+  else if (self->tail == NULL)
   {
-    return;
+    self->tail = malloc(sizeof(self->tail));
+    self->head->next = self->tail;
+    self->tail->text = str;
   }
 
   /* CASE 2 insert in middle */
@@ -143,8 +145,8 @@ int main(void)
   struct pylist *lst = pylist_new();
   pylist_append(lst, "Hello world");
   pylist_print(lst);
-  // pylist_append(lst, "Catch phrase");
-  // pylist_print(lst);
+  pylist_append(lst, "Catch phrase");
+  pylist_print(lst);
   // pylist_append(lst, "Brian");
   // pylist_print(lst);
   // printf("Length = %d\n", pylist_len(lst));
