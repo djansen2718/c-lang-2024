@@ -73,9 +73,11 @@ void pylist_print(struct pylist *self)
   printf("[");
   struct lnode *cur;
   cur = self->head;
+  printf("'%s'", cur->text);
+  cur = cur->next;
   while (cur)
   {
-    printf("'%s'", cur->text);
+    printf(", '%s'", cur->text);
     cur = cur->next;
   }
   printf("]\n");
