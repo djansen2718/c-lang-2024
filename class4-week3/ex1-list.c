@@ -82,23 +82,12 @@ void pylist_print(struct pylist *self)
   }
   printf("]\n");
   return;
-
-  /* About 10 lines of code
-     The output should match Python's
-     list output
-
-     ['Hello world', 'Catch phrase']
-
-Use printf cleverly, *not* string
-concatenation since this is C, not Python.
-  */
 }
 
 /* len(lst) */
 int pylist_len(const struct pylist *self)
 {
-  /* One line of code */
-  return 42;
+  return self->count;
 }
 
 /* lst.append("Hello world") */
@@ -112,25 +101,41 @@ void pylist_append(struct pylist *self, char *str)
     // the thing that is passed in already has been allocated
     // so if we just point to it, we don't have to allocate
     self->head->text = str;
-    return;
   }
   else if (self->tail == NULL)
   {
     self->tail = malloc(sizeof(self->tail));
     self->head->next = self->tail;
     self->tail->text = str;
+    self->tail->next = NULL;
   }
-
-  /* CASE 2 insert in middle */
-
-  /* CASE 3 insert at end*/
-  /* Review: Chapter 6 lectures and assignments */
+  else
+  {
+    struct lnode *cur = malloc(sizeof(*cur));
+    cur->text = str;
+    cur->next = NULL;
+    self->tail->next = cur;
+    self->tail = cur;
+  }
+  self->count++;
+  return;
 }
 /* lst.index("Hello world") - if not found -1 */
 int pylist_index(struct pylist *self, char *str)
 {
-  /* Seven or so lines of code */
-  return 42;
+  struct lnode *cur = malloc(sizeof(*cur));
+  cur = self->head;
+  int index = 0;
+  while (cur)
+  {
+    if (cur->text == str)
+    {
+      return index;
+    }
+    index++;
+    cur = cur->next;
+  }
+  return -1;
 }
 
 /* MY CODE ENDS HERE */
@@ -149,10 +154,10 @@ int main(void)
   pylist_print(lst);
   pylist_append(lst, "Catch phrase");
   pylist_print(lst);
-  // pylist_append(lst, "Brian");
-  // pylist_print(lst);
-  // printf("Length = %d\n", pylist_len(lst));
-  // printf("Brian? %d\n", pylist_index(lst, "Brian"));
-  // printf("Bob? %d\n", pylist_index(lst, "Bob"));
-  // pylist_del(lst);
+  pylist_append(lst, "Brian");
+  pylist_print(lst);
+  printf("Length = %d\n", pylist_len(lst));
+  printf("Brian? %d\n", pylist_index(lst, "Brian"));
+  printf("Bob? %d\n", pylist_index(lst, "Bob"));
+  pylist_del(lst);
 }
