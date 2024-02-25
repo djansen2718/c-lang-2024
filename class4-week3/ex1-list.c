@@ -93,26 +93,25 @@ int pylist_len(const struct pylist *self)
 /* lst.append("Hello world") */
 void pylist_append(struct pylist *self, char *str)
 {
-  /* CASE 1 head is NULL - replace head; next remains NULL; tail remains NULL*/
   if (self->head == NULL)
   {
     self->head = malloc(sizeof(self->head));
-    // here's where i understand how nice it is to use pointers
-    // the thing that is passed in already has been allocated
-    // so if we just point to it, we don't have to allocate
-    self->head->text = str;
+    self->head->text = malloc(sizeof(str));
+    strcpy(self->head->text, str);
   }
   else if (self->tail == NULL)
   {
     self->tail = malloc(sizeof(self->tail));
+    self->tail->text = malloc(sizeof(str));
     self->head->next = self->tail;
-    self->tail->text = str;
+    strcpy(self->tail->text, str);
     self->tail->next = NULL;
   }
   else
   {
     struct lnode *cur = malloc(sizeof(*cur));
-    cur->text = str;
+    cur->text = malloc(sizeof(str));
+    strcpy(cur->text, str);
     cur->next = NULL;
     self->tail->next = cur;
     self->tail = cur;
@@ -128,7 +127,7 @@ int pylist_index(struct pylist *self, char *str)
   int index = 0;
   while (cur)
   {
-    if (cur->text == str)
+    if (strcmp(cur->text, str) == 0)
     {
       return index;
     }
